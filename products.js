@@ -1,13 +1,28 @@
+console.log("products.js loaded");
+
 let products = loadProducts();
+console.log("Loaded products on load:", products);
 renderProducts();
 
 function loadProducts() {
-    const storedProducts = localStorage.getItem('products');
-    return storedProducts ? JSON.parse(storedProducts) : [];
+    try {
+        const storedProducts = localStorage.getItem('products');
+        const loaded = storedProducts ? JSON.parse(storedProducts) : [];
+        console.log("loadProducts returning:", loaded);
+        return loaded;
+    } catch (error) {
+        console.error("Error loading products from local storage:", error);
+        return [];
+    }
 }
 
 function saveProducts() {
-    localStorage.setItem('products', JSON.stringify(products));
+    try {
+        localStorage.setItem('products', JSON.stringify(products));
+        console.log("Saved products:", products);
+    } catch (error) {
+        console.error("Error saving products to local storage:", error);
+    }
 }
 
 function addProduct() {
@@ -41,23 +56,34 @@ function deleteProduct(index) {
 
 function renderProducts() {
     const productBody = document.getElementById('product-body');
+    console.log("renderProducts called. productBody element:", productBody);
     if (productBody) {
-        productBody.innerHTML = '';
-        products.forEach((product, index) => {
-            const row = productBody.insertRow();
-            const nameCell = row.insertCell();
-            const priceCell = row.insertCell();
-            const actionCell = row.insertCell();
+        try {
+            productBody.innerHTML = '';
+            products.forEach((product, index) => {
+                const row = productBody.insertRow();
+                const nameCell = row.insertCell();
+                const priceCell = row.insertCell();
+                const actionCell = row.insertCell();
 
-            nameCell.textContent = product.name;
-            priceCell.textContent = `$${product.price.toFixed(2)}`;
+                nameCell.textContent = product.name;
+                priceCell.textContent = `$${product.price.toFixed(2)}`;
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.onclick = () => deleteProduct(index);
-            actionCell.appendChild(deleteButton);
-        });
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteProduct(index);
+                actionCell.appendChild(deleteButton);
+            });
+            console.log("Products rendered successfully.");
+        } catch (error) {
+            console.error("Error rendering products:", error);
+        }
     } else {
-        console.error("Error: 'product-body' element not found in products.html");
+        console.error("Error: 'product-body' element NOT FOUND in products.html during renderProducts!");
     }
+}
+
+// Ensure renderProducts is called even if loadProducts returns nothing initially
+if (!products || products.length === 0) {
+    renderProducts();
 }
