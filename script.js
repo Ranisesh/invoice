@@ -234,7 +234,6 @@ function loadSavedInvoice() {
     }
 }
 
-function sendInvoice() 
 function sendInvoice() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
