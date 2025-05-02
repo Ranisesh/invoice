@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Invoice Generator</h1>
+
+        <nav>
+            <ul>
+                <li><a href="index.html">Invoice</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="buyers.html">Buyers</a></li>
+                </ul>
+        </nav>
+
+        <div class="buyer-selection">
+            <h2>Buyer</h2>
+            <select id="buyer-select">
+                <option value="">Select Buyer</option>
+            </select>
+        </div>
+
+        <div class="product-selection">
+            <h2>Products</h2>
+            <select id="product-select">
+                <option value="">Select Product</option>
+            </select>
+            <input type="number" id="product-quantity" placeholder="Quantity" min="1" value="1">
+            <button onclick="addProductToInvoice()">Add to Invoice</button>
+        </div>
+
+        <div class="invoice-items">
+            <h2>Invoice Items</h2>
+            <table id="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="invoice-body">
+                </tbody>
+            </table>
+            <div class="total" id="invoice-total">Total: $0.00</div>
+        </div>
+
+        <div class="actions">
+            <button onclick="generateInvoice()">Generate Invoice</button>
+            <button onclick="saveInvoice()">Save Invoice</button>
+            <button onclick="loadInvoice()">Load Invoice</button>
+            <button onclick="sendInvoice()">Send as PDF (Placeholder)</button>
+        </div>
+
+        <div id="invoice-preview" style="display: none;">
+            <h2>Invoice Preview</h2>
+            <div id="preview-buyer-name"></div>
+            <div id="preview-buyer-address"></div>
+            <table id="preview-invoice-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="preview-invoice-body">
+                    </tbody>
+            </table>
+            <div id="preview-invoice-total" class="total"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
