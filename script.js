@@ -1,9 +1,12 @@
+console.log("script.js loaded");
+
 let invoiceItems = [];
 let products = loadProducts();
 let buyers = loadBuyers();
 
 // Populate product and buyer dropdowns on load
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOMContentLoaded fired");
     populateProductDropdown();
     populateBuyerDropdown();
     loadSavedInvoice(); // Try to load any previously saved invoice data
@@ -12,7 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadProducts() {
     try {
         const storedProducts = localStorage.getItem('products');
-        return storedProducts ? JSON.parse(storedProducts) : [];
+        const loadedProducts = storedProducts ? JSON.parse(storedProducts) : [];
+        console.log("Loaded products:", loadedProducts);
+        return loadedProducts;
     } catch (error) {
         console.error("Error loading products:", error);
         return [];
@@ -68,23 +73,31 @@ function addProductToInvoice() {
         const quantity = parseInt(quantityInput.value);
 
         if (selectedIndex !== "" && !isNaN(quantity) && quantity > 0) {
+            console.log("Selected product index:", selectedIndex);
+            console.log("Products array:", products);
             const selectedProduct = products[selectedIndex];
-            const existingItemIndex = invoiceItems.findIndex(item => item.name === selectedProduct.name);
+            console.log("Selected product:", selectedProduct);
 
-            if (existingItemIndex !== -1) {
-                invoiceItems[existingItemIndex].quantity += quantity;
-                invoiceItems[existingItemIndex].total = (invoiceItems[existingItemIndex].price || 0) * invoiceItems[existingItemIndex].quantity;
+            if (selectedProduct) {
+                const existingItemIndex = invoiceItems.findIndex(item => item.name === selectedProduct.name);
+
+                if (existingItemIndex !== -1) {
+                    invoiceItems[existingItemIndex].quantity += quantity;
+                    invoiceItems[existingItemIndex].total = (invoiceItems[existingItemIndex].price || 0) * invoiceItems[existingItemIndex].quantity;
+                } else {
+                    invoiceItems.push({
+                        name: selectedProduct.name,
+                        price: selectedProduct.price || 0,
+                        quantity: quantity,
+                        total: (selectedProduct.price || 0) * quantity
+                    });
+                }
+                renderInvoiceItems();
+                quantityInput.value = 1; // Reset quantity
+                productSelect.selectedIndex = 0; // Reset product selection
             } else {
-                invoiceItems.push({
-                    name: selectedProduct.name,
-                    price: selectedProduct.price || 0,
-                    quantity: quantity,
-                    total: (selectedProduct.price || 0) * quantity
-                });
+                console.error("Error: Selected product is undefined!");
             }
-            renderInvoiceItems();
-            quantityInput.value = 1; // Reset quantity
-            productSelect.selectedIndex = 0; // Reset product selection
         } else {
             alert('Please select a product and enter a valid quantity.');
         }
@@ -106,7 +119,10 @@ function renderInvoiceItems() {
         invoiceBody.innerHTML = '';
         let totalAmount = 0;
 
+        console.log("Rendering invoice items:", invoiceItems); // Log before rendering
+
         invoiceItems.forEach((item, index) => {
+            console.log("Rendering item:", item); // Log each item being rendered
             const row = invoiceBody.insertRow();
             const nameCell = row.insertCell();
             const priceCell = row.insertCell();
@@ -133,6 +149,7 @@ function renderInvoiceItems() {
     }
 }
 
+// ... (rest of your script.js file remains the same) ...
 function generateInvoice() {
     const buyerSelect = document.getElementById('buyer-select');
     const previewBuyerName = document.getElementById('preview-buyer-name');
