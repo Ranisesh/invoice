@@ -1,59 +1,63 @@
-let buyers = loadBuyers();
-renderBuyers();
+let products = loadProducts();
+renderProducts();
 
-function loadBuyers() {
-    const storedBuyers = localStorage.getItem('buyers');
-    return storedBuyers ? JSON.parse(storedBuyers) : [];
+function loadProducts() {
+    const storedProducts = localStorage.getItem('products');
+    return storedProducts ? JSON.parse(storedProducts) : [];
 }
 
-function saveBuyers() {
-    localStorage.setItem('buyers', JSON.stringify(buyers));
+function saveProducts() {
+    localStorage.setItem('products', JSON.stringify(products));
 }
 
-function addBuyer() {
-    const nameInput = document.getElementById('new-buyer-name');
-    const addressInput = document.getElementById('new-buyer-address');
+function addProduct() {
+    const nameInput = document.getElementById('new-product-name');
+    const priceInput = document.getElementById('new-product-price');
     const name = nameInput.value.trim();
-    const address = addressInput.value.trim();
+    const price = parseFloat(priceInput.value);
 
-    if (name && address) {
-        buyers.push({ name, address });
-        saveBuyers();
-        renderBuyers();
+    if (name && !isNaN(price) && price >= 0) {
+        products.push({ name, price });
+        saveProducts();
+        renderProducts();
         nameInput.value = '';
-        addressInput.value = '';
+        priceInput.value = '';
     } else {
-        alert('Please enter a valid buyer name and address.');
+        alert('Please enter a valid product name and price.');
     }
 }
 
-function deleteBuyer(index) {
-    if (confirm('Are you sure you want to delete this buyer?')) {
-        buyers.splice(index, 1);
-        saveBuyers();
-        renderBuyers();
-        // Optionally, update the buyer list on the main invoice page if it's open
-        if (window.opener && !window.opener.closed && window.opener.document.getElementById('buyer-select')) {
-            window.opener.populateBuyerDropdown();
+function deleteProduct(index) {
+    if (confirm('Are you sure you want to delete this product?')) {
+        products.splice(index, 1);
+        saveProducts();
+        renderProducts();
+        // Optionally, update the product list on the main invoice page if it's open
+        if (window.opener && !window.opener.closed && window.opener.document.getElementById('product-select')) {
+            window.opener.populateProductDropdown();
         }
     }
 }
 
-function renderBuyers() {
-    const buyerBody = document.getElementById('buyer-body');
-    buyerBody.innerHTML = '';
-    buyers.forEach((buyer, index) => {
-        const row = buyerBody.insertRow();
-        const nameCell = row.insertCell();
-        const addressCell = row.insertCell();
-        const actionCell = row.insertCell();
+function renderProducts() {
+    const productBody = document.getElementById('product-body');
+    if (productBody) {
+        productBody.innerHTML = '';
+        products.forEach((product, index) => {
+            const row = productBody.insertRow();
+            const nameCell = row.insertCell();
+            const priceCell = row.insertCell();
+            const actionCell = row.insertCell();
 
-        nameCell.textContent = buyer.name;
-        addressCell.textContent = buyer.address;
+            nameCell.textContent = product.name;
+            priceCell.textContent = `$${product.price.toFixed(2)}`;
 
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.onclick = () => deleteBuyer(index);
-        actionCell.appendChild(deleteButton);
-    });
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = () => deleteProduct(index);
+            actionCell.appendChild(deleteButton);
+        });
+    } else {
+        console.error("Error: 'product-body' element not found in products.html");
+    }
 }
