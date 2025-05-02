@@ -234,50 +234,5 @@ function loadSavedInvoice() {
     }
 }
 
-function sendInvoice() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
-    const margin = 10;
-    let y = margin;
+        function sendInvoice()
 
-    // Add Buyer Information
-    const buyerName = document.getElementById('preview-buyer-name').textContent;
-    const buyerAddress = document.getElementById('preview-buyer-address').textContent;
-    pdf.text(buyerName, margin, y += 10);
-    pdf.text(buyerAddress, margin, y += 10);
-    y += 10;
-
-    // Add Invoice Title
-    pdf.setFontSize(20);
-    pdf.text('INVOICE', margin, y += 15);
-    pdf.setFontSize(12);
-    y += 10;
-
-    // Add Invoice Items Table Header
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Product', margin, y);
-    pdf.text('Price', 50, y);
-    pdf.text('Qty', 70, y);
-    pdf.text('Total', 90, y);
-    y += 7;
-    pdf.line(margin, y, 120, y);
-    pdf.setFont('helvetica', 'normal');
-    y += 5;
-
-    // Add Invoice Items
-    invoiceItems.forEach(item => {
-        pdf.text(item.name, margin, y);
-        pdf.text(`$${item.price ? item.price.toFixed(2) : '0.00'}`, 50, y);
-        pdf.text(item.quantity.toString(), 70, y);
-        pdf.text(`$${item.total ? item.total.toFixed(2) : '0.00'}`, 90, y);
-        y += 5;
-    });
-
-    // Add Total
-    const totalText = document.getElementById('preview-invoice-total').textContent;
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(totalText, margin, y += 10);
-
-    // Save the PDF
-    pdf.save('invoice.pdf');
-}
